@@ -1,0 +1,43 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Simple3DModelEditor.Model">
+    <DataTemplate DataType="{x:Type local:Triangle3D}">
+        <Border Margin="2,4,2,4">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Grid.Row="0">Point 1</Label>
+                <Label Grid.Column="0" Grid.Row="1">Point 2</Label>
+                <Label Grid.Column="0" Grid.Row="2">Point 3</Label>
+                <ComboBox Grid.Column="1" Grid.Row="0" SelectedValue="{Binding Point1}" ItemsSource="{Binding Path=Model3D.Points}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Coordinates}"></TextBlock>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <ComboBox Grid.Column="1" Grid.Row="1" SelectedValue="{Binding Point2}" ItemsSource="{Binding Path=Model3D.Points}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Coordinates}"></TextBlock>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <ComboBox Grid.Column="1" Grid.Row="2" SelectedValue="{Binding Point3}" ItemsSource="{Binding Path=Model3D.Points}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Coordinates}"></TextBlock>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </Grid>
+        </Border>
+    </DataTemplate>
+</ResourceDictionary>
