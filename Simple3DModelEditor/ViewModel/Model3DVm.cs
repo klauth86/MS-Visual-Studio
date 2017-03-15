@@ -210,7 +210,7 @@ namespace Simple3DModelEditor.ViewModel {
         private Light GetLightModel3D() {
             var light = new DirectionalLight();
             light.Color = Colors.White;
-            light.Direction = new Vector3D(-1, -1, 1);
+            light.Direction = new Vector3D(-1, -1, -1);
             return light;
         }
     }

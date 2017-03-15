@@ -61,7 +61,7 @@ namespace Simple3DModelEditor.Model {
         public Point3D(double x = 0, double y = 0, double z = 0) {
             X = x;
             Y = y;
-            Z = x;
+            Z = z;
         }
 
         #endregion
