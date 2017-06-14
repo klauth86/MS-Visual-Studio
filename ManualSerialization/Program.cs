@@ -14,6 +14,11 @@ namespace ManualSerialization
             lst.Head.Next.Next = new ListNode();
             lst.Head.Next.Next.Data = "CCCCCC33333";
 
+            lst.Head.Next.Next.Rand = lst.Head;
+            lst.Head.Rand = lst.Head.Next;
+
+            lst.Count = 3;
+
             var textfile = "1.bin";
             using (var fs = File.Create(textfile))
             {

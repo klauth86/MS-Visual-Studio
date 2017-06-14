@@ -12,26 +12,25 @@ namespace ManualSerialization
 
         public void Serialize(FileStream s)
         {
-            byte[] array = BitConverterHelper.StringToByteArray(Data);
-            var lengthBytes = BitConverter.GetBytes(array.Length);
+            byte[] dataBytes = BitConverterHelper.StringToByteArray(Data);
+            var lengthBytes = BitConverter.GetBytes(dataBytes.Length);
             s.Write(lengthBytes, 0, BitConverterHelper.IntBytesLength);
-            s.Write(array, 0, array.Length);
+            s.Write(dataBytes, 0, dataBytes.Length);
         }
 
         public void Deserialize(FileStream s)
         {
-            byte[] array = new byte[BitConverterHelper.IntBytesLength];
-            s.Read(array, 0, BitConverterHelper.IntBytesLength);
-
-            int length = BitConverterHelper.ByteArrayToInt(array);
+            byte[] bytes = new byte[BitConverterHelper.IntBytesLength];
+            s.Read(bytes, 0, BitConverterHelper.IntBytesLength);
+            int length = BitConverterHelper.ByteArrayToInt(bytes);
 
             if (length == 0)
                 return;
 
-            array = new byte[length];
-            s.Read(array, 0, length);
+            bytes = new byte[length];
+            s.Read(bytes, 0, length);
 
-            Data = BitConverterHelper.ByteArrayToString(array);
+            Data = BitConverterHelper.ByteArrayToString(bytes);
         }
     }
 }
