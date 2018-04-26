@@ -21,9 +21,9 @@ namespace TcpEngine {
             _tcpListener.Start();
             _logger.WriteLine("[SRV]:\tServer started!");
             while (_isRunning) {
-                var tcpClient = _tcpListener.AcceptTcpClientAsync();
-                if (tcpClient?.Result != null)
-                    CreateGame(tcpClient.Result);
+                var tcpClient = await _tcpListener.AcceptTcpClientAsync();
+                if (tcpClient != null)
+                    CreateGame(tcpClient);
             }
             _logger.WriteLine("[SRV]:\tServer stopped!");
             _tcpListener.Stop();
