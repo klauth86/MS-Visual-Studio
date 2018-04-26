@@ -93,11 +93,5 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\TcpClientLib\TcpClientLib.csproj">
-      <Project>{99c6098c-64c1-4d64-853c-1b8d45d9ce4f}</Project>
-      <Name>TcpClientLib</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
