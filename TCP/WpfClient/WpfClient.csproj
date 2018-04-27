@@ -93,5 +93,15 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Engine\GameEngine\GameEngine.csproj">
+      <Project>{3A797B9A-ACC9-4558-99C0-545909FA1D4F}</Project>
+      <Name>GameEngine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Engine\TcpEngine\TcpEngine.csproj">
+      <Project>{EE0EC0D6-242F-42B5-A5A9-A0D90B586D13}</Project>
+      <Name>TcpEngine</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

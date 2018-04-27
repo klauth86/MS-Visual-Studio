@@ -66,7 +66,10 @@ namespace GameEngine {
             }
 
             if (A[targetX + targetY * Dimension] == 0)
-                return new int[] {int.MaxValue};
+                return new int[] {-1};
+
+            Units[id].X = targetX;
+            Units[id].Y = targetY;
 
             var result = new int[2 * A[targetX + targetY * Dimension] + 1];
             result[0] = 2 * A[targetX + targetY * Dimension];

@@ -1,17 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using TcpClientLib;
 
 namespace WpfClient
@@ -28,46 +19,49 @@ namespace WpfClient
             InitializeComponent();
             try
             {
-                ClientHelper.StartClient();
-                ClientHelper.GetGameEngine();
-                for (int i = 0; i < ClientHelper.Dimension; i++)
-                {
-                    grid1.ColumnDefinitions.Add(new ColumnDefinition());
-                    grid1.RowDefinitions.Add(new RowDefinition());
-                }
-
-                for (int i = 0; i < ClientHelper.Dimension; i++)
-                {
-                    for (int j = 0; j < ClientHelper.Dimension; j++)
-                    {
-                        var emptyButton = new Button();
-                        Grid.SetRow(emptyButton, i);
-                        Grid.SetColumn(emptyButton, j);
-                        emptyButton.Click += onClickEmpty;
-                        grid1.Children.Add(emptyButton);
-                        emptyButton.BorderThickness = new Thickness(5);
-                    }
-                }
-                foreach (var item in ClientHelper.UnitsDict)
-                {
-                    var unitButton = new Button(); unitButton.Background = Brushes.DarkGoldenrod;
-                    unitButton.BorderThickness = new Thickness(5);
-                    Grid.SetRow(unitButton, item.Value.X);
-                    Grid.SetColumn(unitButton, item.Value.Y);
-                    unitButton.Tag = item.Key;
-                    unitButton.Click += onClickUnit;
-                    grid1.Children.Add(unitButton);
-                }
-
-
+                ClientHelper.Start();
+                ClientHelper.GetGame();
+                InitializeGame();
             }
-            catch (Exception e)
-            {
-                var message = e.Message;
+            catch (Exception e) {
+                MessageBox.Show(e.Message);
+                Application.Current.Shutdown();
             }
         }
 
-        private void onClickUnit(object sender, RoutedEventArgs e)
+        private void InitializeGame()
+        {
+            for (int i = 0; i < ClientHelper.Dimension; i++)
+            {
+                grid1.ColumnDefinitions.Add(new ColumnDefinition());
+                grid1.RowDefinitions.Add(new RowDefinition());
+            }
+
+            for (int i = 0; i < ClientHelper.Dimension; i++)
+            {
+                for (int j = 0; j < ClientHelper.Dimension; j++)
+                {
+                    var emptyButton = new Button();
+                    Grid.SetRow(emptyButton, i);
+                    Grid.SetColumn(emptyButton, j);
+                    emptyButton.Click += OnClickEmpty;
+                    grid1.Children.Add(emptyButton);
+                    emptyButton.BorderThickness = new Thickness(5);
+                }
+            }
+            foreach (var item in ClientHelper.UnitsDict)
+            {
+                var unitButton = new Button(); unitButton.Background = Brushes.DarkGoldenrod;
+                unitButton.BorderThickness = new Thickness(5);
+                Grid.SetRow(unitButton, item.Value.X);
+                Grid.SetColumn(unitButton, item.Value.Y);
+                unitButton.Tag = item.Key;
+                unitButton.Click += OnClickUnit;
+                grid1.Children.Add(unitButton);
+            }
+        }
+
+        private void OnClickUnit(object sender, RoutedEventArgs e)
         {
             if (Selected != null)
             {
@@ -77,21 +71,20 @@ namespace WpfClient
             Selected.BorderBrush = Brushes.Blue;
         }
 
-        private void onClickEmpty(object sender, RoutedEventArgs e)
+        private void OnClickEmpty(object sender, RoutedEventArgs e)
         {
             if (Selected != null)
             {
                 var turns = ClientHelper.GetTurn((int)Selected.Tag, Grid.GetRow(sender as Button), Grid.GetColumn(sender as Button));
-                processTurns(turns);
-                
+                ProcessTurn(turns);
             }
         }
 
-        private async void processTurns(int[] turns)
+        private async void ProcessTurn(int[] turns)
         {
-            for (int i = 0; i < turns.Length;)
+            for (int i = 2; i < turns.Length;)
             {
-                await Task.Delay(1000);
+                await Task.Delay(30);
                 Grid.SetRow(Selected, turns[i++]);
                 Grid.SetColumn(Selected, turns[i++]);
             }
@@ -99,7 +92,7 @@ namespace WpfClient
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            ClientHelper.CloseClient();
+            ClientHelper.Stop();
         }
     }
 }

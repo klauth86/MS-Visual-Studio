@@ -9,33 +9,37 @@ namespace TcpEngine {
         private readonly TextWriter _logger;
         private readonly TcpListener _tcpListener;
 
-        public ServerHelper(TextWriter logger, string ip = "127.0.0.1", int port = 2275) {
+        public ServerHelper(TextWriter logger, string ip = "169.254.60.209", int port = 2275) {
             _tcpListener = new TcpListener(IPAddress.Parse(ip), port);
             _logger = logger;
             WriteLine($"[SRV]:\tServer created at {ip}:{port}");
         }
 
-        public async Task Start() {
+        public void Start() {
             _isRunning = true;
-
             _tcpListener.Start();
             _logger.WriteLine("[SRV]:\tServer started!");
-            while (_isRunning) {
-                var tcpClient = await _tcpListener.AcceptTcpClientAsync();
-                if (tcpClient != null)
-                    CreateGame(tcpClient);
-            }
-            _logger.WriteLine("[SRV]:\tServer stopped!");
-            _tcpListener.Stop();
+            ServerLoop();
         }
 
         public void Stop() {
             _isRunning = false;
+            _tcpListener.Stop();
+            _logger.WriteLine("[SRV]:\tServer stopped!");
+        }
+
+        private async Task ServerLoop() {
+            while (_isRunning) {
+                var tcpClient = await _tcpListener.AcceptTcpClientAsync();
+                if (_isRunning && tcpClient != null)
+                    CreateGame(tcpClient);
+            }
         }
 
         private async Task CreateGame(TcpClient tcpClient) {
-            using (var game = new Game(tcpClient, _logger))
-                await game.Start();
+            await Task.Yield();
+            using (var game = new ClientInfo(tcpClient, _logger))
+                game.Start();
         }
 
         private void WriteLine(string msg) {

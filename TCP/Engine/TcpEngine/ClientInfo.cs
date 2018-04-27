@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 using GameEngine;
 
 namespace TcpEngine {
-    class Game : IDisposable {
+    class ClientInfo : IDisposable {
         private NetworkStream _stream;
         private TextWriter _logger;
         private Engine _engine;
 
-        public Game(TcpClient tcpClient, TextWriter logger) {
+        public ClientInfo(TcpClient tcpClient, TextWriter logger) {
             _stream = tcpClient.GetStream();
             _logger = logger;
             _engine = new Engine();
@@ -20,7 +20,7 @@ namespace TcpEngine {
             _stream.Dispose();
         }
 
-        internal async Task Start() {
+        internal void Start() {
             var intLength = 1 + 3 * _engine.Units.Count;
             var bytes = new byte[(intLength + 1) * sizeof(int)];
             var array = new int[intLength + 1];
@@ -34,7 +34,7 @@ namespace TcpEngine {
                 array[i++] = item.Value.Y;
             }
             Buffer.BlockCopy(array, 0, bytes, 0, bytes.Length);
-            await _stream.WriteAsync(bytes, 0, bytes.Length);
+            _stream.Write(bytes, 0, bytes.Length);
 
             while (true) {
                 if (_stream.DataAvailable) {
@@ -50,12 +50,14 @@ namespace TcpEngine {
                     _stream.Read(bytes, 0, 2 * sizeof(int));
                     Buffer.BlockCopy(bytes, 0, array, 0, bytes.Length);
 
-                    var targetX = array[0];
-                    var targetY = array[1];
+                    array = _engine.EvalTurn(id, array[0], array[1]);
+                    if (array[0] == -1)
+                        continue;
 
-                    array = _engine.EvalTurn(id, targetX, targetY);
-                    bytes = new byte[array.Length * sizeof(int)];
-                    Buffer.BlockCopy(bytes, 0, array, 0, bytes.Length);
+                    _stream.Write(BitConverter.GetBytes(array[0]), 0, sizeof(int));
+
+                    bytes = new byte[(array.Length - 1) * sizeof(int)];
+                    Buffer.BlockCopy(array, sizeof(int), bytes, 0, bytes.Length);
                     _stream.Write(bytes, 0, bytes.Length);
                 }
             }

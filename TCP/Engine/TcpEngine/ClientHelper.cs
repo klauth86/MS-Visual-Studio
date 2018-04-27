@@ -11,13 +11,13 @@ namespace TcpClientLib
 
         private static System.Net.Sockets.TcpClient _tcpClient;
 
-        public static void StartClient(string IP = "127.0.0.1", int port = 2275)
+        public static void Start(string IP = "169.254.60.209", int port = 2275)
         {
             _tcpClient = new System.Net.Sockets.TcpClient();
             _tcpClient.Connect(IP, port);
         }
 
-        public static void GetGameEngine()
+        public static void GetGame()
         {
             var bytes = new byte[sizeof(int)];
             _tcpClient.GetStream().Read(bytes, 0, sizeof(int));
@@ -34,13 +34,6 @@ namespace TcpClientLib
             }
         }
 
-        public static void CloseClient()
-        {
-            _tcpClient.GetStream().Write(BitConverter.GetBytes(-1), 0, sizeof(int));
-            _tcpClient.GetStream().Dispose();
-            _tcpClient.Close();
-        }
-
         public static int[] GetTurn(int id, int targetX, int targetY)
         {
             var bytes = new byte[3 * sizeof(int)];
@@ -53,13 +46,20 @@ namespace TcpClientLib
             var size = BitConverter.ToInt32(bytes, 0);
 
             if (size == -1)
-                return new int[] {};
+                return new int[] { };
 
             bytes = new byte[size * sizeof(int)];
             var array = new int[size];
             _tcpClient.GetStream().Read(bytes, 0, size * sizeof(int));
             Buffer.BlockCopy(bytes, 0, array, 0, size * sizeof(int));
             return array;
+        }
+
+        public static void Stop()
+        {
+            _tcpClient.GetStream().Write(BitConverter.GetBytes(-1), 0, sizeof(int));
+            _tcpClient.GetStream().Dispose();
+            _tcpClient.Close();
         }
     }
 }
